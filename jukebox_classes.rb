@@ -49,10 +49,12 @@ class SongList
   
   def initialize()
     @songs = Array.new
+    @index = WordIndex.new
   end
   
   def append(song)
     @songs.push(song)
+    @index.add_to_index(song, song.name, song.artist)
     self
   end
   
@@ -75,6 +77,19 @@ class SongList
   def with_title(title)
     @songs.find { |song| title == song.name }
   end
+  
+  def lookup(word)
+    @index.lookup(word)
+  end
+  
+  def start()
+    puts "Playing song list..."
+    [1..@songs.length].each { |index| puts "#{index}. #{@songs[index-1]}" }
+  end
+  
+  def pause()
+    puts "Pausing song list...."
+  end
 end
 
 class MyLogger
@@ -87,32 +102,39 @@ class MyLogger
   end
 end
 
-song1 = Song.new("Bicyclops", "Fleck", 260)
-puts song1.to_s
-song1.duration = 257
-puts "%s %s %s" % [song1.artist, song1.name, song1.duration]
-puts song1.duration_in_minutes
-song1.duration_in_minutes = 4.2
-puts song1.duration
+class Button
+  def initialize(label)
+    @label = label
+  end
+end
 
-song2 = KaraokeSong.new("My Way", "Sinatra", 225, "And now, the...")
-puts song2.to_s
+class JukeboxButton < Button
+  def initialize(label, &action)
+   super(label)
+   @action = action
+  end
+  
+  def button_pressed
+    @action.call(self)
+  end
+end
 
-# Testing play function
-puts song1.play
-puts song2.play
-puts song1.play
-puts song1.play
-
-# Testing is_too_long class function
-puts SongList.is_too_long(song1)
-puts SongList.is_too_long(song2)
-song2.duration = 468
-puts SongList.is_too_long(song2)
-
-# Testing MyLogger.create.object_id
-puts MyLogger.create.object_id
-puts MyLogger.create.object_id
-
-# Testing SongList with TestUnit
-load 'jukebox_testing.rb'
+class WordIndex
+  def initialize
+    @index = {}
+  end
+  
+  def add_to_index(obj, *phrases)
+    phrases.each do |phrase|
+      phrase.scan(/\w[-\w']+/) do |word|
+        word.downcase!
+        @index[word] = [] if @index[word].nil?
+        @index[word].push(obj)
+      end
+    end
+  end
+  
+  def lookup(word)
+    @index[word.downcase]
+  end
+end
