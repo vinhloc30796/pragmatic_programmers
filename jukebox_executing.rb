@@ -35,3 +35,8 @@ load 'jukebox_testing.rb'
 # Testing Button class and JukeboxButton subclass
 start_button = JukeboxButton.new("Start") { list.start }
 pause_button = JukeboxButton.new("Pause") { list.pause }
+
+# Test VU class
+medium_volume = VU.new(4)..VU.new(7)
+print "#{medium_volume.to_a}\n"
+puts medium_volume.include?(VU.new(3))

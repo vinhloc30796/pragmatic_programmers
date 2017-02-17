@@ -12,6 +12,18 @@ class Song
     @plays    = 0
   end
   
+  def set_start_time(from_time)
+    #placeholder
+  end
+  
+  def [](from_time, to_time)
+    result = Song.new(self.title + " [extract]",
+                      self.artist,
+                      to_time - from_time)
+    result.set_start_time(from_time)
+    result
+  end
+  
   def to_s
     "Song: #@name--#@artist (#@duration)"
   end
@@ -27,6 +39,13 @@ class Song
   end
   def duration_in_minutes= (new_duration)
     @duration = (new_duration*60).to_i
+  end
+  def duration= (new_duration)
+    @duration = new_duration
+  end
+  
+  def mixed_case(name)
+    name.gsub(/\b\w/) { |first| first.upcase }
   end
   
   attr_reader :name, :artist, :duration
@@ -136,5 +155,30 @@ class WordIndex
   
   def lookup(word)
     @index[word.downcase]
+  end
+end
+
+class VU
+  include Comparable
+  
+  attr :volume
+  
+  def initialize(volume) # 0..9
+    @volume = volume
+  end
+  
+  def inspect
+    '#' * @volume
+  end
+  
+  # Support for ranges
+  
+  def <=>(other)
+    self.volume <=> other.volume
+  end
+  
+  def succ
+    raise(IndexError, "Volume too big") if @volume >= 9
+    VU.new(@volume.succ)
   end
 end
