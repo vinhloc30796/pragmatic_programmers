@@ -40,3 +40,10 @@ pause_button = JukeboxButton.new("Pause") { list.pause }
 medium_volume = VU.new(4)..VU.new(7)
 print "#{medium_volume.to_a}\n"
 puts medium_volume.include?(VU.new(3))
+
+# Test Comparable mixin
+
+puts song1 <=> song2
+puts song1  <  song2
+puts song1 ==  song2
+puts song1  >  song2

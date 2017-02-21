@@ -3,6 +3,8 @@
 # This file defines the classes of Pragmatic Programmers' Jukebox
 
 class Song
+  include Comparable
+  
   @@plays = 0
   
   def initialize(name, artist, duration)
@@ -46,6 +48,10 @@ class Song
   
   def mixed_case(name)
     name.gsub(/\b\w/) { |first| first.upcase }
+  end
+  
+  def <=>(other)
+    self.duration <=> other.duration
   end
   
   attr_reader :name, :artist, :duration
